@@ -1,0 +1,22 @@
+{
+  "name": "pagon/cluster",
+  "description": "Custer worker manager",
+  "keywords": ["cluster", "worker"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Corrie Zhao",
+      "email": "hfcorriez@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.9",
+    "pagon/childprocess": "dev-master"
+  },
+  "autoload": {
+    "psr-0": {
+      "Pagon\\Cluster": "lib/",
+      "Pagon\\Worker": "lib/"
+    }
+  }
+}

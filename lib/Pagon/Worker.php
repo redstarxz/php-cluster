@@ -45,7 +45,7 @@ class Worker extends EventEmitter
      *
      * @param Process $child
      */
-    public function birth(Process $child)
+    public function init(Process $child)
     {
         $that = $this;
         $child->on('message', function ($message) use ($that) {
@@ -54,11 +54,11 @@ class Worker extends EventEmitter
         });
 
         $child->on('exit', function ($code) use ($that) {
-            $that->quit($code);
+            $that->shutdown($code);
         });
 
         $child->on('fork', function () use ($that) {
-            $that->sync();
+            $that->fork();
         });
 
         $this->child = $child;
@@ -67,7 +67,7 @@ class Worker extends EventEmitter
     /**
      * Sync
      */
-    public function sync()
+    public function fork()
     {
         $this->pid = $this->child->pid;
         $this->ppid = $this->child->ppid;
@@ -81,7 +81,7 @@ class Worker extends EventEmitter
      *
      * @param $code
      */
-    public function quit($code)
+    public function shutdown($code)
     {
         $this->status = $code;
 
@@ -103,6 +103,8 @@ class Worker extends EventEmitter
      */
     public function run()
     {
+        $this->emit('run');
+        $this->cluster->emit('run', $this);
         $this->child->run();
     }
 

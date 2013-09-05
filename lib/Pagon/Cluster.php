@@ -51,7 +51,7 @@ class Cluster extends EventEmitter
 
         $this->workers[] = $worker = new Worker($file, $this);
         $child = $this->manager->fork($file, false);
-        $worker->birth($child);
+        $worker->init($child);
         return $worker;
     }
 
@@ -64,7 +64,7 @@ class Cluster extends EventEmitter
     public function restart(Worker $worker)
     {
         $child = $this->manager->fork($worker->file, false);
-        $worker->birth($child);
+        $worker->init($child);
         $worker->run();
         return $worker;
     }

@@ -9,7 +9,7 @@ $cluster = new \Pagon\Cluster();
 $cluster->setMaxChildren(3);
 
 if ($cluster->isMaster()) {
-    $cluster->on('exit', function ($worker, $code) use ($cluster) {
+    $cluster->on('exit', function (\Pagon\Worker $worker, $code) use ($cluster) {
         echo getmypid() . ':' . ' worker exited: ' . $code . PHP_EOL;
         $worker->restart();
     });
@@ -26,5 +26,4 @@ if ($cluster->isMaster()) {
 
     echo getmypid() . ':' . ' i am work' . PHP_EOL;
     sleep('5');
-    echo getmypid() . ':' . ' i am work out' . PHP_EOL;
 }

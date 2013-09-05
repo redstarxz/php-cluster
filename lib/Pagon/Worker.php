@@ -55,6 +55,10 @@ class Worker extends EventEmitter
             $that->cluster->emit('message', $that, $message);
         });
 
+        $child->on('finish', function ($code) use ($that) {
+            $that->finish($code);
+        });
+
         $child->on('exit', function ($code) use ($that) {
             $that->shutdown($code);
         });
@@ -76,6 +80,17 @@ class Worker extends EventEmitter
 
         $this->emit('fork');
         $this->cluster->emit('fork', $this);
+    }
+
+    /**
+     * Quit
+     *
+     * @param $code
+     */
+    public function finish($code)
+    {
+        $this->emit('finish', $code);
+        $this->cluster->emit('finish', $this, $code);
     }
 
     /**

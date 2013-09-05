@@ -131,7 +131,7 @@ class Cluster extends EventEmitter
 
         // Support auto restart
         if ($this->options['auto_restart']) {
-            $this->on('exit', function (Worker $worker) {
+            $this->on('finish', function (Worker $worker) {
                 $worker->restart();
             });
         }

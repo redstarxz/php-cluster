@@ -2,7 +2,7 @@
 
 # PHP-Cluster
 
-Cluster是CLI模式下管理Worker的工具，一般用于后台任务处理
+Cluster用来在CLI模式下管理工作进程，支持中间件方便扩展
 
 # 安装
 

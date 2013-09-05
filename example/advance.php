@@ -1,16 +1,15 @@
-
 <?php
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 declare(ticks = 1);
 
-$cluster = new \Pagon\Cluster(array(
-    'pids_dir'     => true,
-    'auto_restart' => true
-));
+$cluster = new \Pagon\Cluster();
 
 if ($cluster->isMaster()) {
+    $cluster->add('PidFiles');
+    $cluster->add('AutoRestart');
+
     $cluster->on('exit', function (\Pagon\Worker $worker, $code) use ($cluster) {
         echo getmypid() . ':' . ' worker exited: ' . $code . PHP_EOL;
         //$worker->restart();

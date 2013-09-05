@@ -2,6 +2,8 @@
 
 namespace Pagon;
 
+use Pagon\Cluster\Middleware;
+
 declare(ticks = 1);
 
 class Cluster extends EventEmitter
@@ -12,18 +14,18 @@ class Cluster extends EventEmitter
     public $pid;
 
     /**
+     * @var ChildProcess
+     */
+    public $manager;
+
+    /**
      * @var array options for cluster
      */
     protected $options = array(
         'max_children' => 0,
-        'pids_dir'     => false,
-        'auto_restart' => false
+        'auto_restart' => false,
+        'stacks'       => array()
     );
-
-    /**
-     * @var ChildProcess
-     */
-    protected $manager;
 
     /**
      * @var Worker[]
@@ -37,11 +39,11 @@ class Cluster extends EventEmitter
 
     /**
      * @param array $options
+     * @return Cluster
      */
     public function __construct(array $options = array())
     {
         $this->options = $options + $this->options;
-        if ($this->options['pids_dir'] === true) $this->options['pids_dir'] = './.pids';
         $this->manager = ChildProcess::self();
         $this->pid = $this->manager->pid;
     }
@@ -50,10 +52,25 @@ class Cluster extends EventEmitter
      * Set max children
      *
      * @param $num
+     * @return $this
      */
     public function setMaxChildren($num)
     {
         $this->options['max_children'] = $num;
+        return $this;
+    }
+
+    /**
+     * Add middleware
+     *
+     * @param string|Cluster\Middleware $stack
+     * @param array                     $options
+     * @return $this
+     */
+    public function add($stack, array $options = array())
+    {
+        $this->options['stacks'][] = array($stack, $options);
+        return $this;
     }
 
     /**
@@ -109,33 +126,20 @@ class Cluster extends EventEmitter
 
         $this->running = true;
         $that = $this;
-        $this->savePid('master', $this->pid);
 
-        $this->manager->on('exit', function () use ($that) {
-            $that->delPid('master');
-        });
+        // Process middlewares
+        foreach ($this->options['stacks'] as $stack) {
+            $fn = Middleware::build($stack[0], $stack[1]);
+            if (!$fn) throw new \RuntimeException("Error middleware: " . $stack[0]);
+            $fn($this);
+        }
 
+        // Register tick
         $this->manager->on('tick', function () use ($that) {
             $that->tickCheck();
         });
 
-        // When fork
-        $this->on('fork', function (Worker $worker) use ($that) {
-            $that->savePid($worker->id, $worker->pid);
-        });
-
-        // When exit
-        $this->on('exit', function (Worker $worker) use ($that) {
-            $that->delPid($worker->id);
-        });
-
-        // Support auto restart
-        if ($this->options['auto_restart']) {
-            $this->on('finish', function (Worker $worker) {
-                $worker->restart();
-            });
-        }
-
+        // Run workers
         foreach ($this->workers as $worker) {
             $worker->run();
         }
@@ -160,6 +164,7 @@ class Cluster extends EventEmitter
      */
     public function tickCheck()
     {
+        $this->emit('tick');
         // Loop workers
         foreach ($this->workers as $index => $worker) {
             // Check if online
@@ -173,43 +178,5 @@ class Cluster extends EventEmitter
                 continue;
             }
         }
-    }
-
-    /**
-     * Save Pid
-     *
-     * @param string $name
-     * @param int    $pid
-     * @return bool|int
-     */
-    public function savePid($name, $pid)
-    {
-        if (!$this->options['pids_dir']) return false;
-
-        $dir = $this->options['pids_dir'];
-
-        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
-            return false;
-        }
-
-        return file_put_contents($dir . '/' . $name . '.pid', $pid);
-    }
-
-    /**
-     * Save Pid
-     *
-     * @param string $name
-     * @return bool|int
-     */
-    public function delPid($name)
-    {
-        if (!$this->options['pids_dir']) return false;
-
-        $file = $this->options['pids_dir'] . '/' . $name . '.pid';
-
-        if (is_file($file)) {
-            return unlink($file);
-        }
-        return false;
     }
 }

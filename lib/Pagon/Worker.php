@@ -6,6 +6,7 @@ declare(ticks = 1);
 
 class Worker extends EventEmitter
 {
+    public $id;
     public $pid;
     public $ppid;
 
@@ -38,6 +39,7 @@ class Worker extends EventEmitter
     {
         $this->cluster = $cluster;
         $this->file = $file;
+        $this->id = uniqid('worker.');
     }
 
     /**

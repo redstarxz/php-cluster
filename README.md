@@ -1,4 +1,4 @@
-[English](README_en.md)
+其他语言：[English](README_en.md)
 
 # PHP-Cluster
 

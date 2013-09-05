@@ -1,3 +1,5 @@
+[English](README_en.md)
+
 # PHP-Cluster
 
 Cluster是CLI模式下管理Worker的工具，一般用于后台任务处理

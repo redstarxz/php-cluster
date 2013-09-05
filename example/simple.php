@@ -20,7 +20,7 @@ if ($cluster->isMaster()) {
 
     $cluster->run();
 } else {
-    $master->on('exit', function() {
+    $process->on('exit', function () {
         echo getmypid() . ':' . ' i am quit' . PHP_EOL;
     });
 

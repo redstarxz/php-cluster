@@ -6,6 +6,9 @@ declare(ticks = 1);
 
 class Cluster extends EventEmitter
 {
+    /**
+     * @var array options for cluster
+     */
     protected $options = array(
         'max_children' => 0,
     );
@@ -78,7 +81,6 @@ class Cluster extends EventEmitter
         $this->manager->on('tick', function () use ($that) {
             $that->tickCheck();
         });
-
 
         foreach ($this->workers as $worker) {
             $worker->run();

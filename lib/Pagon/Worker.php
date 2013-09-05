@@ -99,6 +99,16 @@ class Worker extends EventEmitter
     }
 
     /**
+     * Kill
+     *
+     * @param $signal
+     */
+    public function kill($signal = SIGINT)
+    {
+        $this->child->kill($signal);
+    }
+
+    /**
      * Run
      */
     public function run()

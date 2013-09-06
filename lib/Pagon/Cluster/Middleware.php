@@ -17,9 +17,9 @@ abstract class Middleware
     /**
      * @param array $options
      */
-    public function __construct(array $options = array())
+    public function __construct($options = array())
     {
-        $this->options = $options + $this->options;
+        $this->options = (array)$options + $this->options;
     }
 
     /**

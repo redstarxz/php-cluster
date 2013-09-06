@@ -15,7 +15,25 @@ class PidFiles extends Middleware
         'dir' => './.pids'
     );
 
-    function call()
+    /**
+     * Support one line arguments
+     *
+     * @param array $options
+     */
+    public function __construct($options = array())
+    {
+        if (is_string($options)) {
+            $options = array('dir' => $options);
+        }
+        parent::__construct($options);
+    }
+
+    /**
+     * Call
+     *
+     * @return mixed|void
+     */
+    public function call()
     {
         if (!$this->options['dir']) return;
 

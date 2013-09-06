@@ -39,6 +39,11 @@ $cluster = new Cluster();
 $cluster->setMaxChildren(3);
 
 if ($cluster->isMaster()) {
+    // 启用保存PID files中间件
+    $cluster->add('PidFiles', './pids');
+
+    // 启用自动重启中间件
+    $cluster->add('AutoRestart');
 
     // 当生成进程时
     $cluster->on('fork', function($worker){

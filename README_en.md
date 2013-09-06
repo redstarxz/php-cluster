@@ -34,6 +34,12 @@ $cluster = new Cluster();
 $cluster->setMaxChildren(3);
 
 if ($cluster->isMaster()) {
+    // Enable pid files store middleware
+    $cluster->add('PidFiles', './pids');
+
+    // Enable auto restart middleware
+    $cluster->add('AutoRestart');
+
     // When process is forked
     $cluster->on('fork', function($worker){
         $worker->send();

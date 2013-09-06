@@ -15,7 +15,7 @@ class AutoRestart extends Middleware
         'dir' => './.pids'
     );
 
-    function call()
+    public function call()
     {
         $this->cluster->on('exit', function (Worker $worker, $code) {
             if (!in_array($code, array(SIGINT, SIGTERM))) {

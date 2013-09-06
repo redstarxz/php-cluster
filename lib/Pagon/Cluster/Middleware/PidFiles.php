@@ -54,7 +54,6 @@ class PidFiles extends Middleware
      */
     public function savePid($name, $pid)
     {
-        echo "[Add] $name - $pid" . PHP_EOL;
         return file_put_contents($this->options['dir'] . '/' . $name . '.pid', $pid);
     }
 
@@ -66,7 +65,6 @@ class PidFiles extends Middleware
      */
     public function delPid($name)
     {
-        echo "[Del] $name" . PHP_EOL;
         if (is_file($file = $this->options['dir'] . '/' . $name . '.pid')) {
             return unlink($file);
         }

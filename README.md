@@ -20,8 +20,11 @@ composer.phar install
 $cluster = new Cluster();
 
 if ($cluster->isMaster()) {
+    // 生成子进程
     $cluster->fork(__FILE__);
-    $cluster->run();
+
+    // 一直运行
+    $cluster->forever();
 } else {
     // 处理工作
 }
@@ -56,7 +59,7 @@ if ($cluster->isMaster()) {
     $worker = $cluster->fork(__FILE__);
 
     // 运行起来
-    $cluster->run();
+    $cluster->forever();
 } else {
     // 处理工作
 }

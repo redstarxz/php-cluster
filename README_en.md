@@ -19,7 +19,7 @@ $cluster = new Cluster();
 
 if ($cluster->isMaster()) {
     $cluster->fork(__FILE__);
-    $cluster->run();
+    $cluster->forever();
 } else {
     // Process something
 }
@@ -53,7 +53,7 @@ if ($cluster->isMaster()) {
     $worker = $cluster->fork(__FILE__);
 
     // Run forever
-    $cluster->run();
+    $cluster->forever();
 } else {
     // Process something in work
 }

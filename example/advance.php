@@ -10,6 +10,11 @@ if ($cluster->isMaster()) {
     $cluster->add('PidFiles');
     $cluster->add('AutoRestart');
 
+    $cluster->on('fork', function (\Pagon\Worker $worker) use ($cluster) {
+        echo $worker->pid . ' - ' . memory_get_usage() . PHP_EOL;
+        //$worker->restart();
+    });
+
     $cluster->on('exit', function (\Pagon\Worker $worker, $code) use ($cluster) {
         echo $worker->pid . ' - ' . 'worker exited: ' . $code . PHP_EOL;
         //$worker->restart();

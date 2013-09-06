@@ -27,7 +27,7 @@ if ($cluster->isMaster()) {
 }
 ```
 
-## 高级使用
+## 高级用法
 
 ```php
 $cluster = new Cluster();
@@ -61,6 +61,11 @@ if ($cluster->isMaster()) {
     // 处理工作
 }
 ```
+
+# 例子
+
+- [simple.php](example/simple.php)
+- [advance.php](example/advance.php)
 
 # License
 

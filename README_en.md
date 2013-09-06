@@ -59,6 +59,11 @@ if ($cluster->isMaster()) {
 }
 ```
 
+# Examples
+
+- [simple.php](example/simple.php)
+- [advance.php](example/advance.php)
+
 # License
 
 (The MIT License)

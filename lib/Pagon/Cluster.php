@@ -23,7 +23,6 @@ class Cluster extends EventEmitter
      */
     protected $options = array(
         'max_children' => 0,
-        'auto_restart' => false,
         'stacks'       => array()
     );
 

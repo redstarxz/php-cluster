@@ -143,6 +143,14 @@ class Cluster extends EventEmitter
         foreach ($this->workers as $worker) {
             $worker->run();
         }
+    }
+
+    /**
+     * Forever run
+     */
+    public function forever()
+    {
+        $this->run();
 
         while (1) {
             usleep(100);

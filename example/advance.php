@@ -11,21 +11,21 @@ if ($cluster->isMaster()) {
     $cluster->add('AutoRestart');
 
     $cluster->on('exit', function (\Pagon\Worker $worker, $code) use ($cluster) {
-        echo getmypid() . ':' . ' worker exited: ' . $code . PHP_EOL;
+        echo $worker->pid . ' - ' . 'worker exited: ' . $code . PHP_EOL;
         //$worker->restart();
     });
 
-    for ($i = 0; $i < 5; $i++) {
+    for ($i = 0; $i < 2; $i++) {
         $cluster->fork(__FILE__);
     }
 
-    $cluster->run();
+    $cluster->forever();
 } else {
     /** @var $process \Pagon\Process */
     $process->on('exit', function () {
-        echo getmypid() . ':' . ' i am quit' . PHP_EOL;
+        //echo getmypid() . '-' . ' i am quit' . PHP_EOL;
     });
 
-    echo getmypid() . ':' . ' i am work' . PHP_EOL;
+    echo getmypid() . ' - ' . 'i am work' . PHP_EOL;
     sleep('5');
 }

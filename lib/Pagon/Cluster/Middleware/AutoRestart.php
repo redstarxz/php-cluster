@@ -17,8 +17,10 @@ class AutoRestart extends Middleware
 
     function call()
     {
-        $this->cluster->on('finish', function (Worker $worker) {
-            $worker->restart();
+        $this->cluster->on('exit', function (Worker $worker, $code) {
+            if (!in_array($code, array(SIGINT, SIGTERM))) {
+                $worker->restart();
+            }
         });
     }
 }

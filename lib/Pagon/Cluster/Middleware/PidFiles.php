@@ -17,12 +17,20 @@ class PidFiles extends Middleware
 
     function call()
     {
+        if (!$this->options['dir']) return;
+
+        $dir = $this->options['dir'];
+
+        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
+            return;
+        }
+
         $that = $this;
 
         $this->savePid('master', $this->cluster->pid);
 
         // When manager exit
-        $this->cluster->on('exit', function () use ($that) {
+        $this->cluster->manager->on('exit', function () use ($that) {
             $that->delPid('master');
         });
 
@@ -46,15 +54,8 @@ class PidFiles extends Middleware
      */
     public function savePid($name, $pid)
     {
-        if (!$this->options['dir']) return false;
-
-        $dir = $this->options['dir'];
-
-        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
-            return false;
-        }
-
-        return file_put_contents($dir . '/' . $name . '.pid', $pid);
+        echo "[Add] $name - $pid" . PHP_EOL;
+        return file_put_contents($this->options['dir'] . '/' . $name . '.pid', $pid);
     }
 
     /**
@@ -65,11 +66,8 @@ class PidFiles extends Middleware
      */
     public function delPid($name)
     {
-        if (!$this->options['dir']) return false;
-
-        $file = $this->options['dir'] . '/' . $name . '.pid';
-
-        if (is_file($file)) {
+        echo "[Del] $name" . PHP_EOL;
+        if (is_file($file = $this->options['dir'] . '/' . $name . '.pid')) {
             return unlink($file);
         }
         return false;

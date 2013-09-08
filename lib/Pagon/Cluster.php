@@ -152,7 +152,7 @@ class Cluster extends EventEmitter
         $this->run();
 
         while (1) {
-            usleep(100);
+            usleep(100000);
         }
     }
 

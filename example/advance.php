@@ -32,5 +32,5 @@ if ($cluster->isMaster()) {
     });
 
     echo getmypid() . ' - ' . 'i am work' . PHP_EOL;
-    sleep('5');
+    sleep(10);
 }
